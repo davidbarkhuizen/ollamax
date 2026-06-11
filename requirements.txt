@@ -1,2 +1,3 @@
 dacite
 ollama
+tabulate

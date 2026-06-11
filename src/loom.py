@@ -1,12 +1,24 @@
-from ollama import AsyncClient, ChatResponse
+from ollama import AsyncClient
+
+from harness_commands.abstract import AbstractHarnessCommand
+from harness_commands.list_models import ListModelsCommand
 
 
 def new_client(url: str) -> AsyncClient:
     return AsyncClient(host=url)
 
 
-async def connect_and_start_session(host: str, port: int, model: str):
+HARNESS_COMMANDS = [ListModelsCommand]
+
+
+def register_harness_commands(client: AsyncClient) -> list[AbstractHarnessCommand]:
+    return [X(client) for X in HARNESS_COMMANDS]
+
+
+async def weave(host: str, port: int, model: str):
     client: AsyncClient = new_client(f"http://{host}:{port}")
+
+    registered_harness_commands = register_harness_commands(client)
 
     async def invoke(invocation: str) -> str:
 
@@ -26,7 +38,8 @@ async def connect_and_start_session(host: str, port: int, model: str):
         return reply
 
     async def execute_harness_command(command: str, args: list[str]) -> list[str]:
-        return list(["execute_harness_command"])
+        harness_command = next(iter([cmd for cmd in registered_harness_commands if cmd.command == command]))
+        return await harness_command.execute(args)
 
     while (invocation := input("> ")) != "exit":
         if invocation.startswith("!"):

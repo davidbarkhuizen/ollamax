@@ -20,7 +20,7 @@ install () {
     deactivate
 }
 
-enter () {
+loom () {
 
     source .venv/bin/activate
     python src/entrypoint.py "$@"
@@ -29,11 +29,11 @@ enter () {
 
 usage () {
     echo "-----------------------------------------------"
-    echo "yolo"
+    echo "loom - llm harness"
     echo "-----------------------------------------------"
     echo "usage:"
     echo
-    echo ". cli [ clean | install | arp-scan | run ]"
+    echo ". cli [ clean | install | arp-scan | loom ]"
     echo
     echo
     echo ". cli arp-scan [interface]"
@@ -57,8 +57,8 @@ case "$option" in
         arp_scan "$@"
     ;;
 
-    run)
-        enter "$@"
+    loom)
+        loom "$@"
     ;;
 
     *)
