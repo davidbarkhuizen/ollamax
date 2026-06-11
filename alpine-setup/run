@@ -1,0 +1,1 @@
+docker run -d -p 11434:11434 -v ~/.ollama:/root/.ollama --name ollama --file Dockerfile
