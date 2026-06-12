@@ -1,0 +1,12 @@
+#!/sbin/openrc-run
+
+name="ollamax"
+description="ollamax"
+command="/usr/local/bin/ollamax.sh"
+command_background=true
+pidfile="/run/ollamax.pid"
+
+depend() {
+    need docker
+    after localmount
+}

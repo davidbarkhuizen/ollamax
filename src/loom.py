@@ -41,10 +41,12 @@ async def weave(host: str, port: int, model: str):
     registered_system_commands = register_system_commands(client)
 
     async def invoke(invocation: str) -> str:
+        nonlocal _model
 
         message = {"content": invocation, "role": "user"}
 
-        stream = await client.chat(model=model, messages=[message], stream=True)
+        print(_model)
+        stream = await client.chat(model=_model, messages=[message], stream=True)
 
         reply: str = ""
 

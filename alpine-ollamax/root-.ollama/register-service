@@ -1,0 +1,5 @@
+#!/bin/sh
+
+openrc default
+rc-update add ollamax default
+service ollamax start
