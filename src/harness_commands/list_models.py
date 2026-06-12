@@ -1,9 +1,7 @@
-from tabulate import tabulate
-
-from .abstract import AbstractHarnessCommand
+from harness_commands.abstract import AbstractSystemCommand
 
 
-class ListModelsCommand(AbstractHarnessCommand):
+class ListModelsCommand(AbstractSystemCommand):
     @property
     def command(self) -> str:
         return "list-models"
@@ -15,7 +13,7 @@ class ListModelsCommand(AbstractHarnessCommand):
         lines: list[str] = []
         for model in models:
             model_name = model["model"]
-            model_size_MB = model["size"] // (1024 * 1024 * 1024)
+            model_size_GB = model["size"] // (1024 * 1024 * 1024)
 
             details = model["details"]
             family = details["family"]
@@ -24,7 +22,7 @@ class ListModelsCommand(AbstractHarnessCommand):
             quantization = details["quantization_level"]
 
             lines.append(
-                f"{family:10} {model_name:20} {format}, {parameter_size} params, {quantization} quantization, {model_size_MB} GB"
+                f"{family:10} {model_name:20} {format}, {parameter_size:5} params, {quantization} quantization, {model_size_GB} GB"
             )
 
         return lines

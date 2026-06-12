@@ -13,7 +13,7 @@ class LogConfig:
 
 
 @dataclass
-class Ollama:
+class OllamaConfig:
     host: str = field(default_factory=lambda: "localhost")
     port: int = field(default_factory=lambda: 11434)
     model: str = "llama3.2"
@@ -21,7 +21,7 @@ class Ollama:
 
 @dataclass
 class Config:
-    ollama: Ollama = field(default_factory=lambda: Ollama())
+    ollama: OllamaConfig = field(default_factory=lambda: OllamaConfig())
     log: LogConfig = field(default_factory=lambda: LogConfig())
 
 
