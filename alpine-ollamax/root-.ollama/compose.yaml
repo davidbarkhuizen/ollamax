@@ -2,6 +2,8 @@ services:
   ollama:
     image: ollama/ollama:latest
     container_name: ollama
+    environment:
+      - OLLAMA_CONTEXT_LENGTH=32768
     restart: unless-stopped
     ports:
       - "11434:11434"

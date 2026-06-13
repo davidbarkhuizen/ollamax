@@ -8,6 +8,7 @@ from harness_commands.abstract import AbstractHarnessCommand
 from harness_commands.active_model import ActiveModelCommand
 from harness_commands.invoke import InvokeCommand
 from harness_commands.list_models import ListModelsCommand
+from harness_commands.ps import PSCommand
 from harness_commands.switch_model import SwitchModelCommand
 from harness_commands.switch_thinking_mode import SwitchThinkingModeCommand
 from harness_commands.task import TaskCommand
@@ -19,6 +20,7 @@ HARNESS_COMMANDS = [
     SwitchThinkingModeCommand,
     InvokeCommand,
     TaskCommand,
+    PSCommand,
 ]
 
 
@@ -49,31 +51,31 @@ async def weave(config: LoomConfig):
 
         return True
 
-    def register_system_commands(client: AsyncClient) -> list[AbstractHarnessCommand]:
+    def register_harness_commands(client: AsyncClient) -> list[AbstractHarnessCommand]:
         return [X(client, get_active_config, reconfigure) for X in HARNESS_COMMANDS]
 
-    registered_system_commands = register_system_commands(client)
+    registered_harness_commands = register_harness_commands(client)
 
-    async def execute_system_command(command: str, args: list[str]) -> list[str]:
-        matching_command = [cmd for cmd in registered_system_commands if cmd.command == command]
+    async def execute_harness_command(command: str, args: list[str]) -> list[str]:
+        matching_command = [cmd for cmd in registered_harness_commands if cmd.command == command]
         if len(matching_command) == 0:
             return [f"unknown system command: {command}"]
 
         system_command = next(iter(matching_command))
         return await system_command.execute(args)
 
-    while (invocation := input("> ").strip()) != "exit":
+    while (invocation := input("> ").strip().lower()) not in ["exit", "quit"]:
         if len(invocation) == 0:
             continue
 
-        command_response: list[str] = list()
+        command_response: list[str]
         match invocation.split(" "):
             case []:
-                pass
+                continue
             case [command, *args]:
-                command_response = await execute_system_command(command, args)
+                command_response = await execute_harness_command(command, args)
             case _:
-                pass
+                continue
 
         for line in command_response:
             print(line)

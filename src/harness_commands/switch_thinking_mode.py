@@ -9,5 +9,5 @@ class SwitchThinkingModeCommand(AbstractHarnessCommand):
     async def execute(self, args: list[str]) -> list[str]:
         think: bool = bool(args[0])
         reconfigured: bool = self.reconfigure("think", think)
-        # validate thinking mode
+        # validate that thinking mode is valid for model
         return [f"think switched to {think}" if reconfigured else "failed to switch think"]

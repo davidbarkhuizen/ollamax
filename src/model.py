@@ -12,3 +12,13 @@ class ChatMessageRole(Enum):
 class CommunicationResponse:
     content: str
     thinking: str
+
+
+@dataclass
+class OllamaModel:
+    name: str | None
+    size_MB: int | None
+    family: str | None
+    format: str | None
+    parameters: str | None
+    quantization: str | None
