@@ -10,7 +10,15 @@
     format: dict[str, Any] | Literal['', 'json']
     options: Mapping[str, Any] | Options
 
-#### `think` parameter of the ollama client chat method
+### role parameter
+
+roles
+- system [used to provide initial context]
+- user [convey user invocation]
+- assistant [last model response, used for continuity]
+- tool [response to tool calls]
+
+#### `think` parameter
 
 The think parameter in the Ollama client chat method controls whether reasoning or "thinking" models perform a reasoning trace before generating a final response. 
 

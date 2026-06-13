@@ -6,8 +6,6 @@ from typing import Any
 from dacite import from_dict
 from dacite.config import Config
 
-from model import ThinkingMode
-
 CONFIG_FILE_PATH = "./config.json"
 
 
@@ -17,9 +15,14 @@ class LogConfig:
 
 
 @dataclass
+class InvocationConfig:
+    payload_path: str = field(default_factory=lambda: "payload")
+
+
+@dataclass
 class ModelConfig:
     model: str
-    thinking_mode: ThinkingMode
+    think: bool
 
 
 @dataclass
@@ -32,6 +35,7 @@ class OllamaConfig:
 class LoomConfig:
     model: ModelConfig
     ollama: OllamaConfig = field(default_factory=lambda: OllamaConfig())
+    invocation: InvocationConfig = field(default_factory=lambda: InvocationConfig())
     log: LogConfig = field(default_factory=lambda: LogConfig())
 
 
@@ -61,7 +65,7 @@ def load_config_from_file(config_file_path: str) -> LoomConfig | None:
 
 
 def create_new_default_config(json_config_file_path: str) -> LoomConfig:
-    config = LoomConfig(model=ModelConfig(model="qwen2.5-coder:14b", thinking_mode=ThinkingMode.HIGH))
+    config = LoomConfig(model=ModelConfig(model="qwen2.5-coder:14b", think=False))
     write_config_to_json_file(config=config, json_file_path=json_config_file_path)
     print(f"new config created at {json_config_file_path}")
     return config

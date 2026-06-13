@@ -4,8 +4,11 @@
     "port": 11434
   },
   "model": {
-    "model": "qwen3.5:9b",
-    "thinking_mode": "medium"
+    "model": "qwen2.5-coder:14b",
+    "think": false
+  },
+  "invocation": {
+    "payload_path": "payload"
   },
   "log": { "root_folder": "log" }
 }

@@ -3,7 +3,7 @@ from typing import Any, Callable
 
 from ollama import AsyncClient
 
-from config import LoomConfig, OllamaConfig
+from config import LoomConfig
 
 
 class AbstractSystemCommand(ABC):

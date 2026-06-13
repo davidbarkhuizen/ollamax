@@ -7,6 +7,7 @@ class SwitchThinkingModeCommand(AbstractSystemCommand):
         return "switch-thinking-mode"
 
     async def execute(self, args: list[str]) -> list[str]:
-        thinking_mode: str = args[0]
-        reconfigured: bool = self.reconfigure("thinking_mode", thinking_mode)
-        return [f"thinking_mode switched to {thinking_mode}" if reconfigured else "failed to switch thinking mode"]
+        think: bool = bool(args[0])
+        reconfigured: bool = self.reconfigure("think", think)
+        # validate thinking mode
+        return [f"think switched to {think}" if reconfigured else "failed to switch think"]

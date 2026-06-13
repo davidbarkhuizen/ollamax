@@ -7,4 +7,4 @@ class ActiveModelCommand(AbstractSystemCommand):
         return "active-model"
 
     async def execute(self, args: list[str]) -> list[str]:
-        return [f"active model: {self.config().model.model}"]
+        return [f"{self.config().model.model}"]
