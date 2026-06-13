@@ -2,3 +2,4 @@ aiofiles
 dacite
 ollama
 tabulate
+rich

@@ -9,7 +9,7 @@ class InvokeCommand(AbstractHarnessCommand):
     def command(self) -> str:
         return "invoke"
 
-    async def execute(self, args: list[str]) -> list[str]:
+    async def execute(self, args: list[str]) -> None:
 
         config: LoomConfig = self.config()
 
@@ -18,5 +18,3 @@ class InvokeCommand(AbstractHarnessCommand):
         _: CommunicationResponse = await communicate(
             client=self.client(), model=config.model.model, system="", user=[text], think=config.model.think
         )
-
-        return [""]

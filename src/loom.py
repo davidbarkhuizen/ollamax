@@ -56,26 +56,22 @@ async def weave(config: LoomConfig):
 
     registered_harness_commands = register_harness_commands(client)
 
-    async def execute_harness_command(command: str, args: list[str]) -> list[str]:
+    async def execute_harness_command(command: str, args: list[str]):
         matching_command = [cmd for cmd in registered_harness_commands if cmd.command == command]
         if len(matching_command) == 0:
             return [f"unknown system command: {command}"]
 
         system_command = next(iter(matching_command))
-        return await system_command.execute(args)
+        await system_command.execute(args)
 
     while (invocation := input("> ").strip().lower()) not in ["exit", "quit"]:
         if len(invocation) == 0:
             continue
 
-        command_response: list[str]
         match invocation.split(" "):
             case []:
                 continue
             case [command, *args]:
-                command_response = await execute_harness_command(command, args)
+                await execute_harness_command(command, args)
             case _:
                 continue
-
-        for line in command_response:
-            print(line)

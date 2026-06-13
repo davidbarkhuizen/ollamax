@@ -1,7 +1,6 @@
-from typing import Any
-
 from ollama._types import ListResponse, ModelDetails
 
+from common.markdown_utils import dicts_to_markdown_table, display_markdown
 from harness_commands.abstract import AbstractHarnessCommand
 from model import OllamaModel
 
@@ -25,14 +24,11 @@ class ListModelsCommand(AbstractHarnessCommand):
     def command(self) -> str:
         return "list-models"
 
-    async def execute(self, args: list[str]) -> list[str]:
+    async def execute(self, args: list[str]) -> None:
         list_response: ListResponse = await self.client().list()
 
-        ollama_models: list[OllamaModel] = [
+        models: list[OllamaModel] = [
             ollama_model_from_list_models_response_model(list_model) for list_model in list_response.models
         ]
 
-        return [
-            f"{model.family:10} {model.name:20} {model.format}, {model.parameters:5} params, {model.quantization} quantization, {model.size_MB // 1024 if model.size_MB is not None else '?'} MB"
-            for model in ollama_models
-        ]
+        display_markdown(dicts_to_markdown_table([model.__dict__ for model in models]))

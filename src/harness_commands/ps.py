@@ -1,7 +1,6 @@
-import pprint
-
 from ollama._types import ProcessResponse
 
+from common.markdown_utils import dicts_to_markdown_table, display_markdown
 from harness_commands.abstract import AbstractHarnessCommand
 
 
@@ -10,16 +9,8 @@ class PSCommand(AbstractHarnessCommand):
     def command(self) -> str:
         return "ps"
 
-    async def execute(self, args: list[str]) -> list[str]:
+    async def execute(self, args: list[str]) -> None:
 
         response: ProcessResponse = await self.client()._request(ProcessResponse, "GET", "/api/ps")
-        active_models = [model.__dict__ for model in response.models]
-
-        lines: list[str] = list()
-
-        for active_model in active_models:
-            lines.append(pprint.pformat(active_model, indent=4, width=80))
-
-        print(lines)
-
-        return lines
+        models = [model.__dict__ for model in response.models]
+        display_markdown(dicts_to_markdown_table([model.__dict__ for model in models]))

@@ -1,3 +1,4 @@
+from common.markdown_utils import display_text_as_markdown
 from harness_commands.abstract import AbstractHarnessCommand
 
 
@@ -6,7 +7,8 @@ class SwitchModelCommand(AbstractHarnessCommand):
     def command(self) -> str:
         return "switch-model"
 
-    async def execute(self, args: list[str]) -> list[str]:
+    async def execute(self, args: list[str]) -> None:
         model: str = args[0]
         reconfigured: bool = self.reconfigure("model", model)
-        return [f"switched to model {model}" if reconfigured else "failed to switch model"]
+
+        display_text_as_markdown(f"switched to model {model}" if reconfigured else "failed to switch model")

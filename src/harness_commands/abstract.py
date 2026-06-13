@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Callable
 
 from ollama import AsyncClient
+from rich.markdown import Markdown
 
 from config import LoomConfig
 
@@ -29,5 +30,5 @@ class AbstractHarnessCommand(ABC):
         raise NotImplementedError()
 
     @abstractmethod
-    async def execute(self, args: list[str]) -> list[str]:
+    async def execute(self, args: list[str]) -> None:
         raise NotImplementedError()

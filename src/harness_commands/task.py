@@ -2,6 +2,7 @@ import glob
 from pathlib import Path
 
 from chat import communicate
+from common.markdown_utils import display_text_as_markdown
 from config import LoomConfig
 from file_utils import read_text_file_async, write_text_file_async
 from harness_commands.abstract import AbstractHarnessCommand
@@ -13,9 +14,9 @@ class TaskCommand(AbstractHarnessCommand):
     def command(self) -> str:
         return "task"
 
-    async def execute(self, args: list[str]) -> list[str]:
+    async def execute(self, args: list[str]) -> None:
         if len(args) == 0:
-            return ["error, no task specified. usage is: task [task-name], e.g. task test"]
+            display_text_as_markdown("error, no task specified. usage is: task [task-name], e.g. task test")
 
         task = args[0]
 
@@ -69,5 +70,3 @@ class TaskCommand(AbstractHarnessCommand):
             await write_text_file_async(task_outputs_folder / "thinking.txt", response.thinking)
 
         # TODO stats
-
-        return []
