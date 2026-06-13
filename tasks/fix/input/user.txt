@@ -1,0 +1,16 @@
+# specification
+
+## context / restrictions / guidance
+
+- be concise, focus only on the supplied code
+
+## objectives / goals
+
+- analyse the functioning of the python code files supplied in the context
+- find any bugs - logical errors, typos, or bad practice
+- suggest fixed / improved code
+- for each fix you make
+  * describe the problem
+  * describe the fix
+  * return the fixed code
+- only return the fixes and their explanation, do NOT return a general analysis of the code
