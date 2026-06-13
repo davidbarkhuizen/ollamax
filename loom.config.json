@@ -1,0 +1,15 @@
+{
+  "ollama": {
+    "host": "192.168.1.88",
+    "port": 11434
+  },
+  "model": {
+    "model": "qwen2.5-coder:14b",
+    "think": false
+  },
+  "task": {
+    "folder": "task",
+    "specification_file_name": "specification.txt"
+  },
+  "log": { "root_folder": "log" }
+}

@@ -9,6 +9,7 @@ from harness_commands.invoke import InvokeCommand
 from harness_commands.list_models import ListModelsCommand
 from harness_commands.switch_model import SwitchModelCommand
 from harness_commands.switch_thinking_mode import SwitchThinkingModeCommand
+from harness_commands.task import TaskCommand
 
 
 def new_async_client(host: str, port: int) -> AsyncClient:
@@ -16,7 +17,14 @@ def new_async_client(host: str, port: int) -> AsyncClient:
     return AsyncClient(host=url)
 
 
-SYSTEM_COMMANDS = [ListModelsCommand, SwitchModelCommand, ActiveModelCommand, SwitchThinkingModeCommand, InvokeCommand]
+SYSTEM_COMMANDS = [
+    ListModelsCommand,
+    SwitchModelCommand,
+    ActiveModelCommand,
+    SwitchThinkingModeCommand,
+    InvokeCommand,
+    TaskCommand,
+]
 
 
 async def weave(config: LoomConfig):

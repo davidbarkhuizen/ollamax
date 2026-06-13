@@ -1,0 +1,13 @@
+# specification
+
+## context / restrictions / guidance
+
+- reply only with python code
+- return the contents of single python code file that accomplishes the objectives
+- do not comment the python file
+
+## objectives / goals of the code
+
+- load the contents of a text file as a single string
+- the file operation must be asynchronous
+- use a non std-lib module if appropriate

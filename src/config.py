@@ -6,7 +6,7 @@ from typing import Any
 from dacite import from_dict
 from dacite.config import Config
 
-CONFIG_FILE_PATH = "./config.json"
+CONFIG_FILE_PATH = "./loom.config.json"
 
 
 @dataclass
@@ -15,8 +15,9 @@ class LogConfig:
 
 
 @dataclass
-class InvocationConfig:
-    payload_path: str = field(default_factory=lambda: "payload")
+class TaskConfig:
+    folder: str = field(default_factory=lambda: "task")
+    specification_file_name: str = field(default_factory=lambda: "specification.txt")
 
 
 @dataclass
@@ -35,7 +36,7 @@ class OllamaConfig:
 class LoomConfig:
     model: ModelConfig
     ollama: OllamaConfig = field(default_factory=lambda: OllamaConfig())
-    invocation: InvocationConfig = field(default_factory=lambda: InvocationConfig())
+    task: TaskConfig = field(default_factory=lambda: TaskConfig())
     log: LogConfig = field(default_factory=lambda: LogConfig())
 
 
