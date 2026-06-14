@@ -25,7 +25,6 @@ HARNESS_COMMANDS = [
 
 
 async def weave(config: LoomConfig):
-    print(config)
 
     host: str = config.ollama.host
     port: int = config.ollama.port
@@ -64,7 +63,7 @@ async def weave(config: LoomConfig):
         system_command = next(iter(matching_command))
         await system_command.execute(args)
 
-    while (invocation := input("> ").strip().lower()) not in ["exit", "quit"]:
+    while (invocation := input(f"\n{_model} > ").strip().lower()) not in ["exit", "quit"]:
         if len(invocation) == 0:
             continue
 

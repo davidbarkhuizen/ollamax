@@ -7,7 +7,7 @@ from model import CommunicationResponse
 class InvokeCommand(AbstractHarnessCommand):
     @property
     def command(self) -> str:
-        return "invoke"
+        return "!"
 
     async def execute(self, args: list[str]) -> None:
 

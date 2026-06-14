@@ -1,5 +1,3 @@
-# user prompt
-
 ## summary
 
 return a python function called `dicts_to_table`, and any additional helper functions, classes, and modules as required

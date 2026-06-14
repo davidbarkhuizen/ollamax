@@ -11,4 +11,5 @@ class SwitchModelCommand(AbstractHarnessCommand):
         model: str = args[0]
         reconfigured: bool = self.reconfigure("model", model)
 
-        display_text_as_markdown(f"switched to model {model}" if reconfigured else "failed to switch model")
+        if not reconfigured:
+            display_text_as_markdown("failed to switch model")

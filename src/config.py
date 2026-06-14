@@ -46,7 +46,6 @@ def load_config_from_json_file(json_file_path: str) -> LoomConfig:
         data = json.load(f)
 
     config: LoomConfig = from_dict(data_class=LoomConfig, data=data, config=Config(cast=[Enum]))
-    print(f"config loaded from file @ {json_file_path}")
     return config
 
 
