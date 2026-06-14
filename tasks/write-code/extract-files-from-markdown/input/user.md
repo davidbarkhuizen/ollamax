@@ -11,7 +11,7 @@ write python code to achieve the following desire behaviour
 - folder path to a destination folder to write the extracted code files to 
   * in the form of a string
 
-#### processing
+### processing
 
 - load the source markdown document from the local file system
 - scan through the document, identifying all markdown code sections
@@ -24,6 +24,16 @@ write python code to achieve the following desire behaviour
     - in the negative case
       * continue with the loop
 
-#### outputs
+#### file path marker example
+
+what follows is an example of file path marker immediately preceding a section of markdown code in a source markdown file, where the file path marker corresponds to a relative file path of `src/dicts_to_table.py`, and a filename of `dicts_to_table.py`
+
+**`src/dicts_to_table.py`**
+```python
+def divide_by_zero(n: int) -> int:
+    return n / 0
+```
+
+### outputs
 
 a list of the destination paths of the successfully extracted files
