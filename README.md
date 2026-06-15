@@ -27,3 +27,7 @@ llm harness
 - input/output expectations
 - constraints
 - domain context
+
+## TODO
+
+- list-tasks command

@@ -55,6 +55,7 @@ class TaskCommand(AbstractHarnessCommand):
         user_inputs_folder: Path = Path(self.config.folders.user) / specification
         user_input_files_folder: Path = user_inputs_folder / "files"
         glob_expression = f"{user_input_files_folder.absolute()}/**/*.*"
+
         task_outputs_folder: Path = Path(self.config.folders.generated) / specification
         rsp_embedded_files_output_path: Path = task_outputs_folder / "files"
 
