@@ -6,16 +6,9 @@ from common.file_utils import file_is_binary, read_text_file_async, write_text_f
 from harness.commands.abstract import AbstractHarnessCommand
 from harness.tether import communicate
 from markdown.display import display_text_as_markdown
-from markdown.parse import extract_embedded_files_from_markdown
-from model.model import CommunicationResponse
-
-CSV = "csv"
-PYTHON = "python"
-SQL = "sql"
-TEXT = "text"
-
-
-language_for_file_extension: dict[str, str] = {".py": PYTHON, ".txt": TEXT, ".sql": SQL, ".csv": CSV}
+from markdown.parse import extract_embedded_text_files_from_markdown
+from markdown.render import markdown_file_block_for_text_file
+from model.model import CommunicationResponse, TextFile
 
 
 async def context_file_block_from_file_paths(file_paths: list[str]) -> str:
@@ -33,22 +26,7 @@ async def context_file_block_from_file_paths(file_paths: list[str]) -> str:
                 continue
             file_contents = await read_text_file_async(Path(path))
 
-            # determine lang marker from file extension
-            #
-            lang: str = "text"
-            for file_ext in language_for_file_extension.keys():
-                if path.endswith(file_ext):
-                    lang = language_for_file_extension[file_ext]
-                    break
-
-            encoded_file = f"""
-
-**`{path}`**
-```{lang}
-{file_contents}
-```
-
-"""
+            encoded_file = markdown_file_block_for_text_file(TextFile(path, file_contents))
 
             context.extend(encoded_file.split("\n"))
             embedded_file_count = embedded_file_count + 1
@@ -91,11 +69,11 @@ class TaskCommand(AbstractHarnessCommand):
     async def execute(self, model: str, think: bool, args: list[str]) -> None:
 
         if len(args) == 0:
-            display_text_as_markdown(f"error, no task specified. usage is: {self.usage}")
+            display_text_as_markdown(self.console, "error, no task specified. usage is: {self.usage}")
         task = args[0]
 
         if len(args) < 2:
-            display_text_as_markdown(f"error, no task specification specified. usage is: {self.usage}")
+            display_text_as_markdown(self.console, f"error, no task specification specified. usage is: {self.usage}")
         specification = args[1]
 
         system_inputs_folder: Path = Path(self.config.folders.system) / "task" / task
@@ -107,7 +85,7 @@ class TaskCommand(AbstractHarnessCommand):
         user_text: str = await read_text_file_async(user_inputs_folder / "specification.md")
         user_files_block = await context_file_block_from_file_paths(glob.glob(glob_expression, recursive=True))
 
-        display_text_as_markdown(f"{model}: {task} {specification}")
+        display_text_as_markdown(self.console, f"{model}: {task} {specification}")
         rsp: CommunicationResponse = await communicate(
             client=self.client,
             model=model,
@@ -125,12 +103,12 @@ class TaskCommand(AbstractHarnessCommand):
         if thinking:
             await write_text_file_async(task_outputs_folder / "thinking.md", rsp.thinking)
 
-        rsp_embedded_files: list[tuple[str, str]] = extract_embedded_files_from_markdown(output_markdown_doc)
+        rsp_embedded_files: list[TextFile] = extract_embedded_text_files_from_markdown(output_markdown_doc)
         print(f"response contains {len(rsp_embedded_files)} embedded files")
 
         os.makedirs(rsp_embedded_files_output_path, exist_ok=True)
         await write_text_file_async(task_outputs_folder / "output.md", output_markdown_doc)
-        for file_contents, relative_file_path in rsp_embedded_files:
-            await write_text_file_async(rsp_embedded_files_output_path / relative_file_path, file_contents)
+        for text_file in rsp_embedded_files:
+            await write_text_file_async(rsp_embedded_files_output_path / text_file.path, text_file.contents)
 
         # TODO stats

@@ -22,3 +22,9 @@ class OllamaModel:
     format: str | None
     parameters: str | None
     quantization: str | None
+
+
+@dataclass
+class TextFile:
+    path: str
+    contents: str

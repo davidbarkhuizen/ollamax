@@ -1,13 +1,10 @@
 import re
 from typing import List
 
-
-class EmbeddedFile:
-    path: str
-    content: str
+from model.model import TextFile
 
 
-def extract_embedded_files_from_markdown(markdown_str: str) -> List[EmbeddedFile]:
+def extract_embedded_text_files_from_markdown(markdown_str: str) -> List[TextFile]:
     """
     Extracts code blocks from a markdown document
 
@@ -33,7 +30,7 @@ def extract_embedded_files_from_markdown(markdown_str: str) -> List[EmbeddedFile
 
     in_code_block = False
     code_content = []
-    relative_file_path = None
+    relative_file_path = ""
     prev_line = None
 
     for line in lines:
@@ -52,9 +49,9 @@ def extract_embedded_files_from_markdown(markdown_str: str) -> List[EmbeddedFile
             prev_line = line_stripped
         else:
             if code_end_pattern.match(line_stripped):
-                code_files.append(("\n".join(code_content), relative_file_path))
+                code_files.append(TextFile(contents="\n".join(code_content), path=relative_file_path))
                 in_code_block = False
-                relative_file_path = None
+                relative_file_path = ""
                 code_content = []
             else:
                 code_content.append(line_stripped)

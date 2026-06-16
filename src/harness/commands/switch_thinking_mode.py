@@ -15,4 +15,6 @@ class SwitchThinkingModeCommand(AbstractHarnessCommand):
         new_think: bool = bool(args[0])
         updated: bool = self.update_setting("think", new_think)
         # validate that thinking mode is supported by model
-        display_text_as_markdown(f"thinking-mode switched to {new_think}" if updated else "failed to switch think-mode")
+        display_text_as_markdown(
+            self.console, f"thinking-mode switched to {new_think}" if updated else "failed to switch think-mode"
+        )
