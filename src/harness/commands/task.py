@@ -3,9 +3,10 @@ import os
 from pathlib import Path
 
 from common.file_utils import file_is_binary, read_text_file_async, write_text_file_async
-from common.markdown import display_text_as_markdown, extract_embedded_files_from_markdown
 from harness.commands.abstract import AbstractHarnessCommand
 from harness.tether import communicate
+from markdown.display import display_text_as_markdown
+from markdown.parse import extract_embedded_files_from_markdown
 from model.model import CommunicationResponse
 
 CSV = "csv"

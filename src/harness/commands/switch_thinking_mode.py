@@ -1,5 +1,5 @@
-from common.markdown import display_text_as_markdown
 from harness.commands.abstract import AbstractHarnessCommand
+from markdown.display import display_text_as_markdown
 
 
 class SwitchThinkingModeCommand(AbstractHarnessCommand):

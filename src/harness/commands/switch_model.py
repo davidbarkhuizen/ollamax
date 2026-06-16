@@ -1,5 +1,5 @@
-from common.markdown import display_text_as_markdown
 from harness.commands.abstract import AbstractHarnessCommand
+from markdown.display import display_text_as_markdown
 
 
 class SwitchModelCommand(AbstractHarnessCommand):
@@ -16,4 +16,4 @@ class SwitchModelCommand(AbstractHarnessCommand):
         reconfigured: bool = self.update_setting("model", new_model)
 
         if not reconfigured:
-            display_text_as_markdown("failed to switch model")
+            display_text_as_markdown(self.console, "failed to switch model")

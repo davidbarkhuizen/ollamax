@@ -2,8 +2,8 @@ import traceback
 from typing import Any
 
 from ollama import AsyncClient
+from rich.console import Console
 
-from common.markdown import display_text_as_markdown
 from config import YokeConfig
 from harness.commands.abstract import AbstractHarnessCommand
 from harness.commands.active_model import ActiveModelCommand
@@ -14,6 +14,7 @@ from harness.commands.switch_model import SwitchModelCommand
 from harness.commands.switch_thinking_mode import SwitchThinkingModeCommand
 from harness.commands.task import TaskCommand
 from harness.tether import new_async_ollama_client
+from markdown.display import display_text_as_markdown, new_markdown_console
 
 HARNESS_COMMANDS = [
     ListModelsCommand,
@@ -28,6 +29,7 @@ HARNESS_COMMANDS = [
 
 async def yoke(client: AsyncClient, config: YokeConfig):
 
+    console: Console = new_markdown_console()
     _model: str = config.ollama.default_model
     _think: bool = False
 
@@ -46,14 +48,14 @@ async def yoke(client: AsyncClient, config: YokeConfig):
         return True
 
     def register_harness_commands(client: AsyncClient) -> list[AbstractHarnessCommand]:
-        return [X(client, config, update_setting) for X in HARNESS_COMMANDS]
+        return [X(config, update_setting, client, console) for X in HARNESS_COMMANDS]
 
     registered_harness_commands = register_harness_commands(client)
 
     async def execute_harness_command(command: str, args: list[str]):
         matching_command = [cmd for cmd in registered_harness_commands if cmd.command == command]
         if len(matching_command) == 0:
-            display_text_as_markdown(f"unknown system command: {command}")
+            display_text_as_markdown(console, f"unknown system command: {command}")
 
         harness_command = next(iter(matching_command))
         await harness_command.execute(_model, _think, args)

@@ -1,7 +1,7 @@
 from rich.markdown import Markdown
 
-from common.markdown import display_markdown
 from harness.commands.abstract import AbstractHarnessCommand
+from markdown.display import display_markdown
 
 
 class ActiveModelCommand(AbstractHarnessCommand):
@@ -10,4 +10,4 @@ class ActiveModelCommand(AbstractHarnessCommand):
         return "active-model"
 
     async def execute(self, model: str, think: bool, args: list[str]) -> None:
-        display_markdown(Markdown(f"{model}"))
+        display_markdown(self.console, Markdown(f"{model}"))

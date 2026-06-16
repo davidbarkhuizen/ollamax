@@ -1,7 +1,8 @@
 from ollama._types import ListResponse
 
-from common.markdown import dicts_to_markdown_table, display_markdown
 from harness.commands.abstract import AbstractHarnessCommand
+from markdown.display import display_markdown
+from markdown.render import dicts_to_markdown_table
 
 
 class ListModelsCommand(AbstractHarnessCommand):
@@ -25,4 +26,4 @@ class ListModelsCommand(AbstractHarnessCommand):
             model_dict.update(model_details_dict)
 
         model_dicts = sorted(model_dicts, key=lambda d: d["model"])
-        display_markdown(dicts_to_markdown_table(model_dicts))
+        display_markdown(self.console, dicts_to_markdown_table(model_dicts))
