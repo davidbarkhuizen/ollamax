@@ -1,7 +1,7 @@
 from ollama._types import ProcessResponse
 
 from harness.commands.abstract import AbstractHarnessCommand
-from markdown.display import display_markdown
+from markdown.display import display_text_as_markdown
 from markdown.render import dict_list_to_markdown_table
 
 
@@ -35,4 +35,4 @@ class PSCommand(AbstractHarnessCommand):
             model_dict.update(details)
 
         model_dicts = sorted(model_dicts, key=lambda d: d["model"])
-        display_markdown(self.console, dict_list_to_markdown_table(model_dicts))
+        display_text_as_markdown(self.console, dict_list_to_markdown_table(model_dicts))

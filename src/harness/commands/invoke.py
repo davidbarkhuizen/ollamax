@@ -12,7 +12,7 @@ class InvokeCommand(AbstractHarnessCommand):
     def usage(self) -> str:
         return "! [natural language instruction or query]"
 
-    async def execute(self, model: str, think: bool, args: list[str]) -> None:
+    async def execute(self, model: str, think: bool, args: list[str]) -> bool:
 
         text = " ".join(args)
 

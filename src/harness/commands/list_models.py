@@ -10,7 +10,7 @@ class ListModelsCommand(AbstractHarnessCommand):
     def command(self) -> str:
         return "list-models"
 
-    async def execute(self, model: str, think: bool, args: list[str]) -> None:
+    async def execute(self, model: str, think: bool, args: list[str]) -> bool:
         response: ListResponse = await self.client.list()
 
         FIELDS_TO_EXCLUDE = ["modified_at", "parent_model", "families", "digest"]

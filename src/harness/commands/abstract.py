@@ -34,5 +34,5 @@ class AbstractHarnessCommand(ABC):
         return self.command
 
     @abstractmethod
-    async def execute(self, model: str, think: bool, args: list[str]) -> None:
+    async def execute(self, model: str, think: bool, args: list[str]) -> bool:
         raise NotImplementedError()
