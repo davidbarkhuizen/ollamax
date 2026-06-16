@@ -54,7 +54,7 @@ async def harness_llm(client: AsyncClient, config: YokeConfig):
         harness_command = matching_commands[0]
 
         try:
-            await harness_command.execute(config.ollama.default_model, args)
+            return await harness_command.execute(config.ollama.default_model, args)
         except Exception as e:
             stack_trace: str = "\n".join(traceback.format_exception(e))
             error_message: str = f"error: unhandled exception during harness command execution - {e} - {stack_trace}"
