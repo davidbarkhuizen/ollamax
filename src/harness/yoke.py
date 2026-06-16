@@ -42,14 +42,24 @@ async def harness_llm(client: AsyncClient, config: YokeConfig):
 
     register_harness_commands(client)
 
-    async def execute_harness_command(command: str, args: list[str]):
-        matching_command = [cmd for cmd in registered_harness_commands if cmd.command == command]
-        if len(matching_command) == 0:
-            display_text_as_markdown(console, f"error:  **unknown harness command: {command}**")
-            return
+    async def execute_harness_command(command_name: str, args: list[str]) -> bool:
+        matching_commands = [cmd for cmd in registered_harness_commands if cmd.command == command_name]
+        if len(matching_commands) == 0:
+            display_text_as_markdown(console, f"error:  **unknown harness command: {command_name}**")
+            return False
 
-        harness_command = next(iter(matching_command))
-        await harness_command.execute(config.ollama.default_model, args)
+        if len(matching_commands) > 1:
+            raise ValueError(f"invalid harness command configuration, multiple commands found matching {command_name}")
+
+        harness_command = matching_commands[0]
+
+        try:
+            await harness_command.execute(config.ollama.default_model, args)
+        except Exception as e:
+            stack_trace: str = "\n".join(traceback.format_exception(e))
+            error_message: str = f"error: unhandled exception during harness command execution - {e} - {stack_trace}"
+            display_text_as_markdown(console, error_message)
+            return False
 
     await execute_harness_command("help", [])
 
