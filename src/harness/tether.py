@@ -1,4 +1,3 @@
-from threading import Lock
 from typing import Any
 
 from ollama import AsyncClient, ChatResponse
@@ -14,16 +13,18 @@ def new_message(role: str, text: str) -> dict[str, Any]:
     return {"content": text, "role": role}
 
 
-_global_log_thread_lock: Lock = Lock()
-
-
 async def communicate(client: AsyncClient, model: str, system: str, user: list[str]) -> CommunicationResponse:
     global _global_log_thread_lock
 
+    system_prompt_length: int = len(system)
+    user_prompt_length: int = sum([len(text) for text in user])
+    total_prompt_length: int = system_prompt_length + user_prompt_length
+    print(
+        f"context length (chars): system {system_prompt_length}, user {user_prompt_length}, total {total_prompt_length}"
+    )
+
     system_message = new_message(ChatMessageRole.system.value, system)
-
     user_messages = [new_message(ChatMessageRole.user.value, text) for text in user]
-
     messages: list[dict[str, Any]] = [system_message, *user_messages]
 
     response_text: str = ""
@@ -77,9 +78,8 @@ async def communicate(client: AsyncClient, model: str, system: str, user: list[s
                 )
 
     finally:
-        with _global_log_thread_lock:
-            with open("log.log", "a") as file:
-                file.write("\n".join([str(rsp) for rsp in chat_responses]))
+        with open("log.log", "a") as file:
+            file.write("\n".join([str(rsp) for rsp in chat_responses]))
 
     print()
 

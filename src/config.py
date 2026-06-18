@@ -18,7 +18,6 @@ class LogConfig:
 class FoldersConfig:
     system: str = field(default_factory=lambda: "system")
     user: str = field(default_factory=lambda: "example/specifications")
-    generated: str = field(default_factory=lambda: "example/generated")
 
 
 @dataclass

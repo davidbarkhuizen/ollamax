@@ -1,0 +1,6 @@
+cat > qwen3-coderx30b-a3b-16k << 'EOF'
+FROM qwen3-coder:30b-a3b-q4_K_M
+PARAMETER num_ctx 16384
+EOF
+
+ollama create qwen3-coderx30b-a3b-16k -f qwen3-coderx30b-a3b-16k

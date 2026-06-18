@@ -7,10 +7,10 @@ from rich.console import Console
 from config import YokeConfig
 from harness.commands.abstract import AbstractHarnessCommand
 from harness.commands.help import HelpCommand
-from harness.commands.invoke import InvokeCommand
 from harness.commands.list_commands import ListCommandsCommand
 from harness.commands.list_models import ListModelsCommand
 from harness.commands.list_tasks import ListTasksCommand
+from harness.commands.nlq import NaturalLanguageQueryCommand
 from harness.commands.ps import PSCommand
 from harness.commands.task import TaskCommand
 from harness.tether import new_async_ollama_client
@@ -40,7 +40,7 @@ async def harness_llm(client: AsyncClient, config: YokeConfig):
             T_HarnessCommand(config, client, console, harness_commands)
             for T_HarnessCommand in [
                 ListModelsCommand,
-                InvokeCommand,
+                NaturalLanguageQueryCommand,
                 TaskCommand,
                 PSCommand,
                 ListCommandsCommand,

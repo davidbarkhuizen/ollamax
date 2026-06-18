@@ -1,4 +1,5 @@
 import glob
+import json
 import os
 from pathlib import Path
 
@@ -40,7 +41,7 @@ def structured_user_text(user_files_block, user_text) -> str:
 class TaskCommand(AbstractHarnessCommand):
     @property
     def command(self) -> str:
-        return "task"
+        return "!"
 
     @property
     def usage(self) -> str:
@@ -67,14 +68,14 @@ class TaskCommand(AbstractHarnessCommand):
 
         user_specification_name = args[1]
 
-        user_specification_inputs_folder: Path = Path(self.config.folders.user) / user_specification_name
+        user_specification_folder: Path = Path(self.config.folders.user) / user_specification_name
 
         display_text_as_markdown(
             self.console,
             dict_list_to_markdown_table(
-                [{"task": task, "model": model, "specification": user_specification_name}],
+                [{"task": task, "model": model, "user task specification": user_specification_name}],
                 alignment="left",
-                column_order=["model", "task", "specification"],
+                column_order=["model", "task", "user task specification"],
             ),
         )
 
@@ -88,7 +89,7 @@ class TaskCommand(AbstractHarnessCommand):
             )
             return False
 
-        user_spec_text_file_path: Path = user_specification_inputs_folder / "specification.md"
+        user_spec_text_file_path: Path = user_specification_folder / "specification.md"
         user_specification_text: str
         try:
             user_specification_text = await read_text_file_async(user_spec_text_file_path)
@@ -99,7 +100,7 @@ class TaskCommand(AbstractHarnessCommand):
             )
             return False
 
-        user_spec_files_folder: Path = user_specification_inputs_folder / "files"
+        user_spec_files_folder: Path = user_specification_folder / "files"
         user_spec_files_glob_expression = f"{user_spec_files_folder}/**/*.*"
         user_specification_files: list[TextFile] = [
             TextFile(
@@ -132,7 +133,7 @@ class TaskCommand(AbstractHarnessCommand):
         thinking = rsp.thinking
         output_markdown_doc: str = rsp.content
 
-        task_outputs_folder: Path = Path(self.config.folders.generated) / user_specification_name
+        task_outputs_folder: Path = user_specification_folder / "generated"
         rsp_embedded_files_output_path: Path = task_outputs_folder / "files"
 
         if thinking:
@@ -149,7 +150,7 @@ class TaskCommand(AbstractHarnessCommand):
         for text_file in response_text_files:
             print(f"- {text_file.path}")
 
-        # TODO stats
-        #
+        stats_file_str: str = json.dumps(rsp.stats.__dict__, indent=4)
+        await write_text_file_async(task_outputs_folder / "stats.json", stats_file_str)
 
         return True
