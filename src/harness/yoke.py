@@ -1,5 +1,4 @@
 import traceback
-from typing import Sequence
 
 from ollama import AsyncClient
 from rich.console import Console
@@ -17,9 +16,6 @@ from harness.commands.switch_model import SwitchModelCommand
 from harness.commands.task import TaskCommand
 from harness.tether import new_async_ollama_client
 from markdown.display import display_text_as_markdown, new_markdown_console
-
-# from prompt_toolkit import PromptSession
-# from prompt_toolkit.patch_stdout import patch_stdout
 
 
 async def execute_harness_command(console, model: str, command: AbstractHarnessCommand, args: list[str]) -> bool:
@@ -69,7 +65,7 @@ async def harness_llm(client: AsyncClient, config: YokeConfig):
 
     def switch_model(model: str) -> bool:
         nonlocal _model
-        # TODO validation
+
         _model = model
         return True
 
