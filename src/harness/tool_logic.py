@@ -14,7 +14,6 @@ async def call_tool(console, tools: list[Callable], tool_call: Message.ToolCall)
 
     display_text_as_markdown(console, f"tool: **{target_tool_name}**")
     if len(tool_call_arguments.keys()) > 0:
-        display_text_as_markdown(console, "arguments:")
         display_text_as_markdown(console, dict_list_to_markdown_table([tool_call_arguments]))
 
     tool_fn: Callable = [tool for tool in tools if tool.__name__ == target_tool_name][0]
