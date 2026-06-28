@@ -1,4 +1,4 @@
-import uuid
+from datetime import datetime
 from pathlib import Path
 
 from harness.command.abstract import AbstractHarnessCommand
@@ -55,7 +55,8 @@ class TaskCommand(AbstractHarnessCommand):
 
         rsp: RawPromptResponse = await prompt(self.console, self.client, model, rq)
 
-        task_outputs_folder: Path = user_prompt_root_folder_path / "generated" / str(uuid.uuid4())
+        run_folder: str = datetime.now().strftime("%Y%m%d_%H%M%S")
+        task_outputs_folder: Path = user_prompt_root_folder_path / "generated" / run_folder
 
         _ = await write_prompt_response_elements_to_disk(self.console, rsp, task_outputs_folder)
         return not rsp.failed
