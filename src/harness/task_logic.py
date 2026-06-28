@@ -49,15 +49,15 @@ def structured_user_prompt(console, text: str, text_files: list[TextFile]) -> st
 """
 
 
-async def load_system_prompt_for_task_from_disk(console, tasks_root_folder_path: Path, task: str) -> str:
+async def load_system_prompt_for_task_from_disk(console, tasks_root_folder_path: Path, task: str) -> str | None:
 
     task_system_prompt_folder_path: Path = tasks_root_folder_path / "task" / task
     task_system_prompt_file_path: Path = task_system_prompt_folder_path / "system.md"
 
     if not os.path.exists(task_system_prompt_file_path):
-        error: str = f"error: **unknown task {task} (path does not exist at {task_system_prompt_file_path})**"
+        error: str = f"error: **unknown task {task} (path does not exist at {str(task_system_prompt_file_path)})**"
         display_text_as_markdown(console, error)
-        raise ValueError(error)
+        return None
 
     task_system_prompt_text: str
     try:
@@ -67,7 +67,7 @@ async def load_system_prompt_for_task_from_disk(console, tasks_root_folder_path:
             console,
             f"error: **system prompt file for task {task} does not exist**. expected @ {task_system_prompt_file_path}",
         )
-        raise
+        return None
 
     return task_system_prompt_text
 
@@ -106,7 +106,10 @@ async def load_user_prompt_for_task_from_disk(console, user_prompt_root_folder_p
 async def load_prompt_request_for_task_from_disk(
     console, tasks_root_folder_path: Path, user_prompt_root_folder_path: Path, task: str
 ) -> RawPromptRequest | None:
-    system_prompt: str = await load_system_prompt_for_task_from_disk(console, tasks_root_folder_path, task)
+    system_prompt: str | None = await load_system_prompt_for_task_from_disk(console, tasks_root_folder_path, task)
+    if system_prompt is None:
+        return None
+
     user_prompt: str | None = await load_user_prompt_for_task_from_disk(console, user_prompt_root_folder_path)
     if user_prompt is None:
         return None

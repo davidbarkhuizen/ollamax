@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Callable
 
@@ -72,3 +72,7 @@ class RawPromptResponse:
     tool_calls: list[Message.ToolCall]
     message_history: list[dict[str, str]]
     stats: PromptStats | None
+
+    failed: bool = field(default=False)
+    failure_error: str = field(default="")
+    failure_stacktrace: str = field(default="")

@@ -1,9 +1,12 @@
 from __future__ import barry_as_FLUFL
 
+import traceback
 from typing import Any
 
+import httpx
 from ollama import AsyncClient, ChatResponse, Message
 
+from markdown.display import display_text_as_markdown
 from model.model import ChatMessageRole, PromptStats, RawPromptRequest, RawPromptResponse
 
 
@@ -25,7 +28,7 @@ def new_message(
     return core
 
 
-async def prompt(client: AsyncClient, model: str, rq: RawPromptRequest) -> RawPromptResponse:
+async def prompt(console, client: AsyncClient, model: str, rq: RawPromptRequest) -> RawPromptResponse:
 
     system_prompt_length: int = len(rq.system_prompt)
     user_prompt_length: int = sum([len(text) for text in rq.user_prompt])
@@ -47,6 +50,27 @@ async def prompt(client: AsyncClient, model: str, rq: RawPromptRequest) -> RawPr
     rsp_stats: PromptStats | None = None
 
     chat_responses: list[ChatResponse] = list()
+
+    rsp_messages: list[dict[str, Any]] = [
+        new_message(role="assistant", text=rsp_content_text, tool_calls=rsp_tool_calls)
+    ]
+
+    def new_raw_prompt_response(
+        failure_error: str | None = None, failure_stacktrace: str | None = None
+    ) -> RawPromptResponse:
+
+        msg_history: list[dict[str, Any]] = [*rq_messages, *rsp_messages]
+
+        return RawPromptResponse(
+            content=rsp_content_text,
+            thinking=rsp_thinking_text,
+            stats=rsp_stats,
+            message_history=msg_history,
+            tool_calls=rsp_tool_calls,
+            failed=True if failure_error is not None else False,
+            failure_error=failure_error if failure_error is not None else "",
+            failure_stacktrace=failure_stacktrace if failure_stacktrace is not None else "",
+        )
 
     try:
         async for chat_response in await client.chat(model=model, messages=rq_messages, tools=rq.tools, stream=True):
@@ -108,11 +132,15 @@ async def prompt(client: AsyncClient, model: str, rq: RawPromptRequest) -> RawPr
                     eval_duration_s=safe_divide(chat_response.get("eval_duration", 0), 1e9),
                 )
 
+    except httpx.ConnectError:
+        error: str = "error connecting to ollama server"
+        display_text_as_markdown(console, f"**{error}**")
+        return new_raw_prompt_response(failure_error=error, failure_stacktrace=traceback.format_exc())
+
     finally:
         with open("log.log", "a") as file:
             file.write("\n".join([str(rsp) for rsp in chat_responses]))
 
-    print()
     if rsp_stats:
         print(
             f"{rsp_stats.prompt_eval_count} prompt tokens evaluated in {rsp_stats.prompt_eval_duration_s:.2f} seconds => {rsp_stats.tokens_in_per_second:.1f} tokens per second"
@@ -121,16 +149,4 @@ async def prompt(client: AsyncClient, model: str, rq: RawPromptRequest) -> RawPr
             f"{rsp_stats.eval_count} tokens generated in {rsp_stats.eval_duration_s:.2f} seconds => {rsp_stats.tokens_out_per_second:.1f} tokens per second"
         )
 
-    rsp_messages: list[dict[str, Any]] = [
-        new_message(role="assistant", text=rsp_content_text, tool_calls=rsp_tool_calls)
-    ]
-
-    msg_history: list[dict[str, Any]] = [*rq_messages, *rsp_messages]
-
-    return RawPromptResponse(
-        content=rsp_content_text,
-        thinking=rsp_thinking_text,
-        stats=rsp_stats,
-        message_history=msg_history,
-        tool_calls=rsp_tool_calls,
-    )
+    return new_raw_prompt_response()

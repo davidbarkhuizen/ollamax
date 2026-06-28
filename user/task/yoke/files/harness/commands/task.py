@@ -1,8 +1,9 @@
 import uuid
 from pathlib import Path
 
-from harness.commands.abstract import AbstractHarnessCommand
 from harness.task import load_prompt_request_for_task_from_disk, write_prompt_response_elements_to_disk
+
+from harness.commands.abstract import AbstractHarnessCommand
 from harness.tether import prompt
 from markdown.display import display_text_as_markdown
 from markdown.render import dict_list_to_markdown_table
@@ -47,9 +48,9 @@ class TaskCommand(AbstractHarnessCommand):
             self.console, tasks_system_prompt_root_folder_path, user_prompt_root_folder_path, task
         )
 
-        rsp: RawPromptResponse = await prompt(self.client, model, rq)
+        rsp: RawPromptResponse = await prompt(self.console, self.client, model, rq)
 
         task_outputs_folder: Path = user_prompt_root_folder_path / "generated" / str(uuid.uuid4())
 
         _ = await write_prompt_response_elements_to_disk(rsp, task_outputs_folder)
-        return True
+        return not rsp.failed

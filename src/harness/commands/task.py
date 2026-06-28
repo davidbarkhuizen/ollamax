@@ -49,9 +49,9 @@ class TaskCommand(AbstractHarnessCommand):
         if rq is None:
             return False
 
-        rsp: RawPromptResponse = await prompt(self.client, model, rq)
+        rsp: RawPromptResponse = await prompt(self.console, self.client, model, rq)
 
         task_outputs_folder: Path = user_prompt_root_folder_path / "generated" / str(uuid.uuid4())
 
         _ = await write_prompt_response_elements_to_disk(self.console, rsp, task_outputs_folder)
-        return True
+        return not rsp.failed

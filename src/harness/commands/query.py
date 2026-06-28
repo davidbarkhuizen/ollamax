@@ -3,7 +3,6 @@ from typing_extensions import Any, Callable
 from harness.commands.abstract import AbstractHarnessCommand
 from harness.tether import prompt
 from harness.tool.tool_logic import call_tool
-from harness.tool.tool_model import Tool
 from harness.tool.tool_registry import load_tools
 from model.model import RawPromptRequest, RawPromptResponse
 
@@ -24,7 +23,7 @@ class QueryCommand(AbstractHarnessCommand):
         available_tools: list[Callable] = [tool.function for tool in load_tools()]
 
         initial_rq = RawPromptRequest(system_prompt="", user_prompt=[text], tools=available_tools, message_history=[])
-        initial_rsp: RawPromptResponse = await prompt(self.client, model, initial_rq)
+        initial_rsp: RawPromptResponse = await prompt(self.console, self.client, model, initial_rq)
 
         message_history: list[dict[str, Any]] = list(initial_rsp.message_history)
 
@@ -39,6 +38,7 @@ class QueryCommand(AbstractHarnessCommand):
             message_history.extend(tool_call_response_messages)
 
             rsp: RawPromptResponse = await prompt(
+                self.console,
                 self.client,
                 model,
                 RawPromptRequest(
@@ -47,5 +47,8 @@ class QueryCommand(AbstractHarnessCommand):
             )
             tool_calls = [*rsp.tool_calls]
             message_history = rsp.message_history
+
+            if rsp.failed:
+                return False
 
         return True
